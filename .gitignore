@@ -1,0 +1,9 @@
+# zig
+.zig-cache
+zig-out
+# generated
+temp_solution.zig
+aoc.bin
+input.txt
+# user specific
+TOKEN
