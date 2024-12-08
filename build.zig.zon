@@ -1,9 +1,8 @@
 .{
-    .name = "aoc_2024",
-    .version = "0.0.0",
+    .name = "aoc_zig_templ",
+    .version = "0.0.1",
     .paths = .{
         "build.zig",
-        "aoc.zig",
         "build.zig.zon",
         "src",
         "LICENSE",

@@ -96,32 +96,30 @@ const CleanContext = struct {
     pub fn make(step: *std.Build.Step, options: std.Build.Step.MakeOptions) anyerror!void {
         _ = options;
         const self: *CleanContext = @fieldParentPtr("step", step);
-        try cleanYearDirectories(self.b, self.confirm);
+
+        if (!self.confirm) {
+            std.debug.print("\x1b[91mWARNING: This will delete all your solutions!\n", .{});
+            std.debug.print("\x1b[0mYou need to pass the \x1b[93m-Dconfirm=true \x1b[0mflag to confirm.\n", .{});
+            return error.MissingConfirmation;
+        }
+
+        const stdout = std.io.getStdOut();
+        var dir = try std.fs.cwd().openDir("src", .{ .iterate = true });
+        defer dir.close();
+        var iter = dir.iterate();
+        while (try iter.next()) |entry| {
+            if (entry.kind == .directory) {
+                if (std.fmt.parseInt(u16, entry.name, 10)) |_| {
+                    try dir.deleteTree(entry.name);
+                    try stdout.writer().print("Deleted src/{s}\n", .{entry.name});
+                } else |_| continue;
+            }
+        }
+        std.fs.cwd().deleteFile("aoc.bin") catch {};
+        std.fs.cwd().deleteTree("src/temp_solution.zig") catch {};
+        try stdout.writer().writeAll("Clean completed successfully.\n");
     }
 };
-
-fn cleanYearDirectories(b: *std.Build, confirm: bool) !void {
-    _ = b;
-    if (!confirm) {
-        std.debug.print("\x1b[91mWARNING: This will delete all your solutions!\n", .{});
-        std.debug.print("\x1b[0mYou need to pass the \x1b[93m-Dconfirm=true \x1b[0mflag to confirm.\n", .{});
-        return error.MissingConfirmation;
-    }
-
-    const stdout = std.io.getStdOut();
-    var dir = try std.fs.cwd().openDir("src", .{ .iterate = true });
-    defer dir.close();
-    var iter = dir.iterate();
-    while (try iter.next()) |entry| {
-        if (entry.kind == .directory) {
-            if (std.fmt.parseInt(u16, entry.name, 10)) |_| {
-                try dir.deleteTree(entry.name);
-                try stdout.writer().print("Deleted src/{s}\n", .{entry.name});
-            } else |_| continue;
-        }
-    }
-    try stdout.writer().writeAll("Clean completed successfully.\n");
-}
 
 const SetupContext = struct {
     year: u16,
