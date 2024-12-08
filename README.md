@@ -1,13 +1,14 @@
 # aoc_zig
 
-This is my repository for the [Advent of Code](https://adventofcode.com/) challenges in [Zig](https://ziglang.org/).
-Other than overengineered solutions and highly optimized trash,
-you will maybe find this also neat build system for fetching and submitting aoc code.
+This is my template repository for the [Advent of Code](https://adventofcode.com/) challenges in [Zig](https://ziglang.org/).
+It includes a neat build system for fetching inputs, submitting solutions, and managing AoC code.
+
 ## Features
 - Automatic input data fetching
 - Submit your result with a command!
 - Tests and benchmarking!
 - Supports every year and every day!
+
 ## Usage
 
 To fetch the input data for solutions, you need to provide a `TOKEN` file in the root directory of the repository. This file should contain a single line with your [advent of code](https://adventofcode.com/) cookie.
